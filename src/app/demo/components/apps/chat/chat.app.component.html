@@ -1,0 +1,123 @@
+<!-- #chatWindow [scrollTop]="chatWindow.scrollHeight" -->
+
+<button pButton pRipple label="New Conversation" icon="pi pi-plus-circle" class="w-full sm:w-auto" (click)="createConversation()"></button>
+
+
+<p-tabView [(activeIndex)]="activeIndex" (activeIndexChange)="onTabChange($event)" [scrollable]="true">
+ 
+    
+    <p-tabPanel *ngFor="let conv of conversation"  [header]="conv.sessionId" >
+    </p-tabPanel>
+
+    <!-- <p-tabPanel header=add>
+        <div *ngIf="addBoolean == true && chatBoolean == false ">
+
+            <div class="p-3 md:p-4 lg:p-6 flex flex-column sm:flex-row align-items-center mt-auto border-top-1 surface-border gap-3">
+                <input id="message" type="text" [(ngModel)]="messsage.content" pInputText placeholder="Type a message" class="flex-1 w-full sm:w-auto border-round" (keydown.enter)="sendMesssage()"/>
+                <div class="flex w-full sm:w-auto gap-3">
+                    <button pRipple class="p-button p-button-secondary w-full sm:w-auto justify-content-center text-xl" (click)="op.toggle($event)">😀</button>
+                    <button pButton pRipple label="Send" icon="pi pi-send" class="w-full sm:w-auto" (click)="createConversation()"></button>
+                </div>
+            </div>
+
+        </div>
+    </p-tabPanel> -->
+
+<div class="flex flex-column md:flex-row gap-5" style="min-height: 81vh">
+    <div class="flex-1 card p-0">
+        <div class="flex flex-column h-full">
+                    <div class="p-3 md:px-4 lg:px-6 lg:py-4 mt-2 overflow-y-auto" style="max-height: 53vh;" 
+                     #chatWindow
+                    >
+                        <div *ngFor="let messsage of messsages">
+                            <div *ngIf="messsage.users[0].username === 'Bot'" class="grid grid-nogutter mb-4">
+                                <div class="mr-3 mt-1">
+                                    <!-- <img src="assets/demo/images/avatar/{{user.image}}" alt="user.name" class="w-3rem h-3rem border-circle shadow-4"> -->
+                                    <div class="border-circle"
+                                    [style.background-color]="bgColor"  
+                                     style="
+                                    width: 40px;   
+                                    height: 40px;
+                                    border-radius: 100%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-size: 15px;
+                                    color: white;
+                                    font-weight: bold;
+                                    text-transform: uppercase;">
+                        <span class="initials">{{ initials }}</span>
+                      </div>
+                                </div>
+                                <div class="col mt-3">
+                                    <p   class="text-900 font-semibold mb-3">{{ messsage.users[0]?.username || 'Utilisateur inconnu' }}</p>
+                                    <span class="text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round" style="word-break: break-word; max-width:80%;">{{messsage.content}}</span>
+                                    <p class="text-700 mt-3"><i class="pi pi-check ml-2 text-green-400"></i></p>
+                                </div>
+                            </div>
+                    
+                            <div *ngIf="messsage.users[0].username === username" class="grid grid-nogutter mb-4">
+                                <div class="col mt-3 text-right">
+                                    <span class="inline-block text-left font-medium border-1 surface-border bg-primary-100 text-primary-900 p-3 white-space-normal border-round" style="word-break: break-word; max-width:80%;">{{messsage.content}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div *ngFor="let msg of messages">
+                            <div *ngIf="msg.user === 'Bot' && msg.session === selectedSessionId" class="grid grid-nogutter mb-4">
+                                <div class="mr-3 mt-1">
+                                    <div class="border-circle"
+                                        [style.background-color]="bgColor"  
+                                        style="
+                                        width: 40px;   
+                                        height: 40px;
+                                        border-radius: 100%;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        font-size: 15px;
+                                        color: white;
+                                        font-weight: bold;
+                                        text-transform: uppercase;">
+                                            <span class="initials">{{ initials }}</span>
+                                    </div>
+                                    <!-- <img src="assets/demo/images/avatar/{{user.image}}" alt="user.name" class="w-3rem h-3rem border-circle shadow-4"> -->
+                                </div>
+                                <div class="col mt-3">
+                                    <p   class="text-900 font-semibold mb-3">{{ msg.user || 'Utilisateur inconnu' }}</p>
+                                    <span class="text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round" style="word-break: break-word; max-width:80%;">{{msg.content}}</span>
+                                    <p class="text-700 mt-3"><i class="pi pi-check ml-2 text-green-400"></i></p>
+                                </div>
+                            </div>
+                    
+                            <div *ngIf="msg.user === username && msg.session === selectedSessionId" class="grid grid-nogutter mb-4">
+                                <div class="col mt-3 text-right">
+                                    <span class="inline-block text-left font-medium border-1 surface-border bg-primary-100 text-primary-900 p-3 white-space-normal border-round" style="word-break: break-word; max-width:80%;">{{msg.content}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+        
+                    
+                    
+        
+                    <div class="p-3 md:p-4 lg:p-6 flex flex-column sm:flex-row align-items-center mt-auto border-top-1 surface-border gap-3">
+                        <input id="message" type="text" [(ngModel)]="messsage.content" pInputText placeholder="Type a message" class="flex-1 w-full sm:w-auto border-round" (keydown.enter)="sendMesssage()"/>
+                        <div class="flex w-full sm:w-auto gap-3">
+                            <button pRipple class="p-button p-button-secondary w-full sm:w-auto justify-content-center text-xl" (click)="op.toggle($event)">😀</button>
+                            <button pButton pRipple label="Send" icon="pi pi-send" class="w-full sm:w-auto" (click)="sendMesssage()"></button>
+                        </div>
+                    </div>
+              
+        </div>
+        <p-overlayPanel #op styleClass="w-full sm:w-30rem">
+            <ng-template pTemplate>
+                <button *ngFor="let emoji of emojis;" pButton pRipple (click)="op.hide(); onEmojiSelect(emoji)" type="button" [label]="emoji" class="p-2 p-button-text text-2xl"></button>
+            </ng-template>
+        </p-overlayPanel>
+        
+        <!-- <app-chat-box [user]="activeUser"></app-chat-box> -->
+    </div>
+</div>
+</p-tabView>

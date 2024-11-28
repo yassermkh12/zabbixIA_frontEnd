@@ -1,0 +1,234 @@
+<div class="layout-topbar">
+    <div class="topbar-start">
+        <button #menubutton type="button" class="topbar-menubutton p-link p-trigger" (click)="onMenuButtonClick()">
+            <i class="pi pi-bars"></i>
+        </button>
+    </div>
+    <div class="layout-topbar-menu-section">
+        <app-sidebar></app-sidebar>
+    </div>
+    <div class="topbar-end">
+        <ul class="topbar-menu  ">
+            <li class="hidden lg:block">
+                <div class="topbar-search" [ngClass]="{'topbar-search-active': searchActive}">
+                    <button pButton icon="pi pi-search" class="topbar-searchbutton p-button-text p-button-secondary text-color-secondary p-button-rounded flex-shrink-0" type="button" (click)="activateSearch()"></button>
+                    <div class="search-input-wrapper">
+                        <span class="p-input-icon-right">
+                            <input #searchinput type="text" pInputText placeholder="Search" (blur)="deactivateSearch()" (keydown.escape)="deactivateSearch()"/>
+                            <i class="pi pi-search"></i>
+                        </span>
+                    </div>
+                </div>
+            </li>
+           
+
+            <li #profile class="profile-item topbar-item mr-5" >
+
+                <a pStyleClass="@next" enterFromClass="ng-hidden" enterActiveClass="px-scalein" leaveToClass="ng-hidden" leaveActiveClass="px-fadeout" [hideOnOutsideClick]="true" pRipple class="cursor-pointer">
+                    <!-- <img class="border-circle" src="assets/demo/images/avatar/square/avatar-m-1.jpg"> -->
+                    <div class="border-circle"
+                    [style.background-color]="bgColor"  
+                    style="
+                    width: 40px;   
+                    height: 40px;
+                    border-radius: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 15px;
+                    color: white;
+                    font-weight: bold;
+                    text-transform: uppercase;">
+                        <span class="initials">{{ initials }}</span>
+                      </div>
+                </a>
+
+                <ul class="topbar-menu active-topbar-menu p-4 w-15rem z-5 ng-hidden border-round">
+                    <li role="menuitem" class="mb-2 mb-3">
+                            <div class="user-info border-bottom pb-2">
+                                <span  class="font-semibold">{{user.username}}</span>
+                            </div>
+                    </li>
+                    <li role="menuitem" class="m-0 mb-3">
+                        <a (click)="showDialogProfile()" class="flex align-items-center hover:text-primary-500 transition-duration-200" pStyleClass="@grandparent" enterFromClass="ng-hidden" enterActiveClass="px-scalein" leaveToClass="ng-hidden" leaveActiveClass="px-fadeout">
+                            <i class="pi pi-fw pi-lock mr-2"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                    <!-- <li role="menuitem" class="m-0 mb-3">
+                        <a href="#" class="flex align-items-center hover:text-primary-500 transition-duration-200" pStyleClass="@grandparent" enterFromClass="ng-hidden" enterActiveClass="px-scalein" leaveToClass="ng-hidden" leaveActiveClass="px-fadeout">
+                             <i class="pi pi-fw pi-cog mr-2"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li> -->
+                    <li role="menuitem" class="m-0 mb-3">
+                        <a (click)="showDialogEmail()" class="flex align-items-center hover:text-primary-500 transition-duration-200" pStyleClass="@grandparent" enterFromClass="ng-hidden" enterActiveClass="px-scalein" leaveToClass="ng-hidden" leaveActiveClass="px-fadeout">
+                            <i class="pi pi-fw pi-key mr-2"></i>
+                            <span>Reset Password</span>
+                        </a>
+                    </li>
+                    <li role="menuitem" class="m-0">
+                        <a (click)="logout()" class="flex align-items-center hover:text-primary-500 transition-duration-200" pStyleClass="@grandparent" enterFromClass="ng-hidden" enterActiveClass="px-scalein" leaveToClass="ng-hidden" leaveActiveClass="px-fadeout">
+                            <i class="pi pi-fw pi-sign-out mr-2"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    
+</div>
+
+<p-dialog header="Reset Password" [modal]="true" [(visible)]="visibleEmail" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-5">Enter your email.</span>
+    <div class="flex align-items-center gap-3 mb-5">
+        <span class="p-input-icon-left">
+            <i class="pi pi-envelope"></i>
+        <input pInputText id="email" class="flex-auto" #emailField="ngModel" [(ngModel)]="email" autocomplete="off"  style="   max-width: 320px;
+                        min-width: 300px;" readonly />
+        </span>
+    </div>
+    <div *ngIf="emailField.invalid && formSubmittedEmail">
+        <div *ngIf="emailField.errors?.['required']">Email is required.</div>
+    </div>
+    <div class="flex justify-content-end gap-2">
+        <p-button label="Cancel" severity="secondary" (onClick)="cancelEmail()" />
+        <p-button label="Save" (onClick)="forgotPassword(email)"/>
+    </div>
+</p-dialog>
+
+<p-dialog header="Reset Password" [modal]="true" [(visible)]="visibleVerify" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-5">
+        <span class="text-600 font-medium">We have sent code to you email:</span>
+                    <div class="flex align-items-center mt-1 mb-4">
+                        <i class="pi pi-envelope text-600"></i>
+                        <span class="text-900 font-bold ml-2">dm**&#64;gmail.com</span>
+                    </div>
+        </span>
+    
+    <form #verifyCodeForm="ngForm"  (ngSubmit)="verifyCode(verifyCodeForm)">
+    <div class="flex align-items-center gap-3 mb-5">
+        <span class="p-input-icon-left">
+            <i class="pi pi-key"></i>
+            <p-inputNumber name="code" ngModel code #codeField="ngModel" mode="decimal" 
+            inputId="withoutgrouping" 
+            [useGrouping]="false" 
+            [ngStyle]="{'padding': '10px 40px'} " />
+        <!-- <input p-inputNumber inputId="integeronly" class="flex-auto" name="code" ngModel required code #codeField="ngModel" autocomplete="off" style="   max-width: 320px;
+                        min-width: 300px;" pattern="[0-9]*" /> -->
+        </span>
+    </div>
+     <!-- <div class="flex align-items-center gap-3 mb-5" *ngIf="codeField.invalid && formSubmittedVerifyCode">
+        <div class="flex text-color-secondary mb-5 text-primary" *ngIf="codeField.errors?.['required']">Verification code is required.</div>
+    </div> -->
+
+    
+    <div class="flex justify-content-end gap-2">
+        <p-button label="Cancel" severity="secondary" (onClick)="cancelVerify()" />
+        <p-button label="Save" (onClick)="verifyCode(verifyCodeForm)" />
+    </div>
+    </form>
+</p-dialog>
+
+<p-dialog header="Reset Password" [modal]="true" [(visible)]="visiblePassword" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-5">Enter your new password.</span>
+    <div class="flex align-items-center gap-3 mb-5">
+        <span class="p-input-icon-left">
+            <i class="pi pi-key"></i>
+        <input pInputText type="password" required password id="password" #passwordField="ngModel" [(ngModel)]="password" autocomplete="off" style="   max-width: 320px;
+                        min-width: 300px;"/>
+        </span>
+    </div>
+    <div class="flex align-items-center gap-3 mb-5" *ngIf="passwordField.invalid && formSubmittedPassword">
+        <div class="flex text-color-secondary mb-5 text-primary" *ngIf="passwordField.errors?.['required']">New password is required.</div>
+    </div>
+    <div class="flex justify-content-end gap-2">
+        <p-button label="Cancel" severity="secondary" (onClick)="cancelPassword()" />
+        <p-button label="Save" (onClick)="resetPassword(password)" />
+    </div>
+</p-dialog>
+
+<p-dialog header="Profile" [modal]="true" [(visible)]="visibleProfile" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-5">Your profile.</span>
+    <div class="flex align-items-center gap-3 mb-5">
+        <span class="p-input-icon-left">
+            <i class="pi pi-user"></i>
+        <input pInputText id="firstName" class="flex-auto" #emailField="ngModel" [(ngModel)]="user.firstName" autocomplete="off" placeholder="firstName" style="   max-width: 320px;
+                        min-width: 300px;" readonly />
+        </span>
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+        <span class="p-input-icon-left">
+            <i class="pi pi-user"></i>
+        <input pInputText id="lastName" class="flex-auto" #emailField="ngModel" [(ngModel)]="user.lastName" autocomplete="off" placeholder="lastName" style="   max-width: 320px;
+                        min-width: 300px;" readonly />
+        </span>
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+        <span class="p-input-icon-left">
+            <i class="pi pi-user"></i>
+        <input pInputText id="username" class="flex-auto" #emailField="ngModel" [(ngModel)]="user.username" autocomplete="off" placeholder="username" style="   max-width: 320px;
+                        min-width: 300px;" readonly/>
+        </span>
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+        <span class="p-input-icon-left">
+            <i class="pi pi-envelope"></i>
+        <input pInputText id="email" class="flex-auto" #emailField="ngModel" [(ngModel)]="user.email" autocomplete="off" placeholder="email" style="   max-width: 320px;
+                        min-width: 300px;" readonly />
+        </span>
+    </div>
+    <div class="flex justify-content-end gap-2">
+        <p-button label="Cancel" severity="secondary" (onClick)="cancelProfile()" />
+        <p-button label="Update" (onClick)="showDialogUpdateProfile()" />
+    </div>
+</p-dialog>
+
+
+
+
+
+<p-dialog header="Update Profile" [modal]="true" [(visible)]="visibleUpdateProfile" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-5">Update your profile.</span>
+    <div class="flex align-items-center gap-3 mb-5">
+        <span class="p-input-icon-left">
+            <i class="pi pi-user"></i>
+        <input pInputText id="firstName" class="flex-auto" #emailField="ngModel" [(ngModel)]="user.firstName" autocomplete="off" placeholder="firstName" style="   max-width: 320px;
+                        min-width: 300px;" />
+        </span>
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+        <span class="p-input-icon-left">
+            <i class="pi pi-user"></i>
+        <input pInputText id="lastName" class="flex-auto" #emailField="ngModel" [(ngModel)]="user.lastName" autocomplete="off" placeholder="lastName" style="   max-width: 320px;
+                        min-width: 300px;" />
+        </span>
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+        <span class="p-input-icon-left">
+            <i class="pi pi-user"></i>
+                    <input pInputText id="username" class="flex-auto" #emailField="ngModel" [(ngModel)]="user.username" autocomplete="off" placeholder="username" style="   max-width: 320px;
+                        min-width: 300px;" />
+        </span>
+    </div>
+
+    
+    <div class="flex align-items-center gap-3 mb-5">
+        <span class="p-input-icon-left">
+            <i class="pi pi-envelope"></i>
+        <input pInputText id="email" class="flex-auto" #emailField="ngModel" [(ngModel)]="user.email" autocomplete="off" placeholder="email" style="   max-width: 320px;
+                        min-width: 300px;" />
+        </span>
+    </div>
+    <div class="flex justify-content-end gap-2">
+        <p-button label="Cancel" severity="secondary" (onClick)="cancelUpdateProfile()" />
+        <p-button label="Save" (onClick)="confirmUpdateProfile()"/>
+    </div>
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }" />
+
+
+
