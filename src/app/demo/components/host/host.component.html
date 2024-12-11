@@ -1,0 +1,81 @@
+<div class="col-12">
+    <div class="card">
+        <h5>Hosts</h5>
+        <p-table #dt1 [value]="datas" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['hostid','hostName','ip','port','groups']" responsiveLayout="scroll">
+            <ng-template pTemplate="caption">
+                <div class="flex justify-content-between flex-column sm:flex-row">
+                    <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+                    <span class="p-input-icon-left mb-2">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Search Keyword" class="w-full"/>
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                 <tr>
+                   <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Host id
+                            <p-columnFilter type="text" field="hostid" display="menu" placeholder="Search by id"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Host name
+                            <p-columnFilter type="text" field="hostName" display="menu" placeholder="Search by name"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Ip
+                            <p-columnFilter type="text" field="ip" display="menu" placeholder="Search by ip"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Port
+                            <p-columnFilter type="text" field="port" display="menu" placeholder="Search by port"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Group
+                            <p-columnFilter type="text" field="groups" display="menu" placeholder="Search by group"></p-columnFilter>
+                        </div>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-data >
+                <tr >
+                    <td>
+                        {{data.hostid}}
+                    </td>
+                    <td>
+                        {{data.hostName}}
+                    </td>
+                     <td>
+                        {{data.ip}}
+                    </td>
+                    <td>
+                        {{data.port}}
+                    </td>
+                    <td>
+                       {{data.groups}}
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="8">No customers found.</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="loadingbody">
+                <tr>
+                    <td colspan="8">Loading problems data. Please wait.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+</div>
+<!-- <p-toast></p-toast> -->

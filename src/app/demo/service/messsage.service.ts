@@ -6,7 +6,7 @@ import { Messsage } from '../models/messsage';
 @Injectable({
   providedIn: 'root'
 })
-export class MessageService {
+export class MesssageService {
 
   constructor(
     private http : HttpClient

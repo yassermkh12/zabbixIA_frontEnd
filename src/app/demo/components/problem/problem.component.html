@@ -1,0 +1,112 @@
+<div class="col-12">
+    <div class="card">
+        <h5>Problems</h5>
+        <p-table #dt1 [value]="datas" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['name','host_names','eventid','severity_label','readable_time']" responsiveLayout="scroll">
+            <ng-template pTemplate="caption">
+                <div class="flex justify-content-between flex-column sm:flex-row">
+                    <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+                    <span class="p-input-icon-left mb-2">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Search Keyword" class="w-full"/>
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Time
+                            <p-columnFilter type="text" field="readable_time" display="menu" placeholder="mm/dd/yyyy"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Host name
+                            <p-columnFilter type="text" field="host_names" display="menu" placeholder="Search by name"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            EventId
+                            <p-columnFilter type="text" field="eventid" display="menu" placeholder="Search by country"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Problem
+                            <p-columnFilter type="text" field="name" display="menu" placeholder="Search by country"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Severity
+                            <p-columnFilter field="severity" matchMode="equals" display="menu">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any" [style]="{'min-width': '12rem'}" >
+                                        <ng-template let-option pTemplate="item">
+                                            <span [class]="'customer-badge status-' + option.label">{{option.name}}</span>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </div>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-data >
+                <tr >
+                    <td>
+                        {{data.readable_time}}
+                    </td>
+                    <td>
+                        {{data.host_names}}
+                    </td>
+                     <td>
+                        {{data.eventid}}
+                    </td>
+                    <td>
+                        {{data.name}}
+                    </td>
+                    
+                    <td>
+                        <div *ngIf = "data.severity == 0">
+                            <span [class]="'customer-badge status-proposal'">{{data.severity_label}}</span>
+                        </div>
+                        <div *ngIf = "data.severity == 1">
+                            <span [class]="'customer-badge status-renewal'">{{data.severity_label}}</span>
+
+                        </div>
+                        <div *ngIf = "data.severity == 2">
+                            <span [class]="'customer-badge status-negotiation'">{{data.severity_label}}</span>
+
+                        </div>
+                        <div *ngIf = "data.severity == 3">
+                            <span [class]="'customer-badge status-new'">{{data.severity_label}}</span>
+
+                        </div>
+                        <div *ngIf = "data.severity == 4">
+                            <span [class]="'customer-badge status-qualified'">{{data.severity_label}}</span>
+
+                        </div>
+                        <div *ngIf = "data.severity == 5">
+                            <span [class]="'customer-badge status-unqualified'">{{data.severity_label}}</span>
+
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="8">No problems found.</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="loadingbody">
+                <tr>
+                    <td colspan="8">Loading problems data. Please wait.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+</div>
+<p-toast></p-toast>

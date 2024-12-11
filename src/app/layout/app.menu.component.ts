@@ -24,6 +24,37 @@ export class AppMenuComponent implements OnInit {
                         routerLink: ['/uikit/table']
                     },
                     {
+                        label: 'Problem',
+                        icon: 'pi pi-fw pi-wrench',
+                        routerLink: ['/problem']
+                    },
+                    {
+                        label: 'Host',
+                        icon: 'pi pi-fw pi-server',
+                        routerLink: ['/host']
+                    },
+                    {
+                        label: 'administration',
+                        icon: 'pi pi-fw pi-user',
+                        items: [
+                            {
+                                label: 'user',
+                                icon: 'pi pi-fw pi-user',
+                                routerLink: ['/user']
+                            },
+                            {
+                                label: 'role',
+                                icon: 'pi pi-fw pi-sitemap',
+                                routerLink: ['/role']
+                            },
+                            {
+                                label: 'conversation',
+                                icon: 'pi pi-fw pi-comments',
+                                routerLink: ['/conversation']
+                            },
+                        ]
+                    },
+                    {
                         label: 'Auth',
                         icon: 'pi pi-fw pi-user',
                         items: [

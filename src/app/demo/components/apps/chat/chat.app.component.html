@@ -1,6 +1,18 @@
 <!-- #chatWindow [scrollTop]="chatWindow.scrollHeight" -->
 
-<button pButton pRipple label="New Conversation" icon="pi pi-plus-circle" class="w-full sm:w-auto" (click)="createConversation()"></button>
+<p-toolbar styleClass="mb-4">
+<ng-template pTemplate="left">
+    <div class="flex flex-wrap gap-2">
+        <button pButton pRipple label="{{ 'New Conversation' }}" icon="pi pi-plus" class="p-button-success mr-2"
+        (click)="createConversation()"></button>
+        <button pButton pRipple label="{{ 'Delete Conversation' }}" icon="pi pi-trash" class="p-button-danger mr-2"></button>
+        <!-- <button pButton pRipple label="{{ 'search'  }}"
+                icon="pi pi-check"
+                class="p-button-info"
+                ></button> -->
+    </div>
+</ng-template>
+</p-toolbar>
 
 
 <p-tabView [(activeIndex)]="activeIndex" (activeIndexChange)="onTabChange($event)" [scrollable]="true">
@@ -50,9 +62,13 @@
                       </div>
                                 </div>
                                 <div class="col mt-3">
-                                    <p   class="text-900 font-semibold mb-3">{{ messsage.users[0]?.username || 'Utilisateur inconnu' }}</p>
-                                    <span class="text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round" style="word-break: break-word; max-width:80%;">{{messsage.content}}</span>
-                                    <p class="text-700 mt-3"><i class="pi pi-check ml-2 text-green-400"></i></p>
+                                    <p class="text-900 font-semibold mb-3">{{ messsage.users[0]?.username || 'Utilisateur inconnu' }}</p>
+                                    <span class="text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round" style="word-break: break-word; max-width:80%;">
+                                        <p-scrollPanel  styleClass="custombar2" >
+                                        <div [innerHTML]="parseMessage(messsage.content)"></div>
+                                        </p-scrollPanel>
+                                    </span>
+                                    <p class="text-700 mt-3">{{messsage.timestamp | date:'yyyy-MM-dd hh:mm:ss'}}<i class="pi pi-check ml-2 text-green-400"></i></p>
                                 </div>
                             </div>
                     
@@ -85,8 +101,15 @@
                                 </div>
                                 <div class="col mt-3">
                                     <p   class="text-900 font-semibold mb-3">{{ msg.user || 'Utilisateur inconnu' }}</p>
-                                    <span class="text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round" style="word-break: break-word; max-width:80%;">{{msg.content}}</span>
-                                    <p class="text-700 mt-3"><i class="pi pi-check ml-2 text-green-400"></i></p>
+                                    <span class="text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round" style="word-break: break-word; max-width:60%;">
+                                        <!-- {{msg.content}} -->
+                                        <p-scrollPanel  styleClass="custombar2" >
+                                            <div [innerHTML]="parseMessage(msg.content)"></div>
+                                        </p-scrollPanel>
+                                    </span>
+                                    <p class="text-700 mt-3">{{msg.timestamp | date:'yyyy-MM-dd HH:mm:ss'}}
+                                        <i class="pi pi-check ml-2 text-green-400"></i>
+                                    </p>
                                 </div>
                             </div>
                     
@@ -96,12 +119,36 @@
                                 </div>
                             </div>
                         </div>
+                    
+        
+                        <div *ngIf="isLoading" class="grid grid-nogutter mb-4">
+                            <div class="mr-3 mt-1" >
+                                <div class="border-circle"
+                                    [style.background-color]="bgColor"  
+                                    style="
+                                    width: 40px;   
+                                    height: 40px;
+                                    border-radius: 100%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-size: 15px;
+                                    color: white;
+                                    font-weight: bold;
+                                    text-transform: uppercase;">
+                                        <span class="initials">{{ initials }}</span>
+                                </div>
+                                <!-- <img src="assets/demo/images/avatar/{{user.image}}" alt="user.name" class="w-3rem h-3rem border-circle shadow-4"> -->
+                            </div>
+                            <div class="col mt-3">
+                                <p   class="text-900 font-semibold mb-3">Bot</p>
+                                <span class="text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round" style="word-break: break-word; max-width:80%;"> Response in progress<span>.</span><span>.</span><span>.</span></span>
+                                <p class="text-700 mt-3"><i class="pi pi-check ml-2 text-green-400"></i></p>
+                            </div>
+                        </div>
                     </div>
-        
-        
-                    
-                    
-        
+
+
                     <div class="p-3 md:p-4 lg:p-6 flex flex-column sm:flex-row align-items-center mt-auto border-top-1 surface-border gap-3">
                         <input id="message" type="text" [(ngModel)]="messsage.content" pInputText placeholder="Type a message" class="flex-1 w-full sm:w-auto border-round" (keydown.enter)="sendMesssage()"/>
                         <div class="flex w-full sm:w-auto gap-3">
@@ -121,3 +168,11 @@
     </div>
 </div>
 </p-tabView>
+<p-toast [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }" />
+
+
+
+<!-- test -->
+
+<input id="message" type="text" [(ngModel)]="eventId" pInputText placeholder="Type a message eventId" class="flex-1 w-full sm:w-auto border-round" (keydown.enter)="getProblem()"/>
+<input id="message" type="text" [(ngModel)]="hostId" pInputText placeholder="Type a message hostId" class="flex-1 w-full sm:w-auto border-round" (keydown.enter)="getProblemByHost()"/>

@@ -15,6 +15,27 @@ export class ConversationService {
   ) { }
   private API = "http://localhost:8080/api/conversation/"
 
+  getAllConversations(): Observable<any[]> {
+    return this.http.get<any[]>(this.API+'all');
+  }
+
+  getConversationById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.API}/by-id/${id}`);
+  }
+
+  createConversation(username: string, sessionId: string, usernameId: string): Observable<any> {
+    const url = `${this.API}create-conversation/${username}/${sessionId}/${usernameId}`;
+    return this.http.post<any>(url, {})
+    .pipe(
+      catchError(
+        (error:HttpErrorResponse) =>{
+          console.log("error", error.error?.message);
+          return throwError(() => new Error(error.error.message || "Erreur inconnue")); // Retourne un message d'erreur        
+          }
+      )
+    )
+  }
+
   getOrCreateConversation(message: Messsage, username: string, session: string, usernameId: string): Observable<Messsage> {
     return this.http.post<Messsage>(this.API + username +'/'+ session +'/'+ usernameId, message)
     .pipe(
@@ -49,5 +70,17 @@ export class ConversationService {
           }
       )
     )
+  }
+
+  deleteConversation(id: number): Observable<any> {
+    return this.http.delete(`${this.API}/delete/${id}`);
+  }
+
+  // test
+  private apiUrl = 'http://127.0.0.1:5000/send_to_openai';  // L'URL de votre API Flask
+
+  sendMessage(): Observable<any> {
+    // Effectuer une requête POST avec un corps JSON contenant le message
+    return this.http.post<any>(this.apiUrl, {});
   }
 }

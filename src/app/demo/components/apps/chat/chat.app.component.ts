@@ -4,13 +4,22 @@ import { User } from 'src/app/demo/models/user';
 import { ChatService } from './service/chat.service';
 import { jwtDecode } from 'jwt-decode';
 import { Messsage } from 'src/app/demo/models/messsage';
-import { Message} from 'primeng/api';
+import { ConfirmationService, Message, MessageService} from 'primeng/api';
 import { Conversation } from 'src/app/demo/models/conversation';
 import { ConversationService } from 'src/app/demo/service/conversation.service';
-import { MessageService } from 'src/app/demo/service/message.service';
+import { MesssageService } from 'src/app/demo/service/messsage.service';
+import { UserService } from 'src/app/demo/service/user.service';
+import { RoleServiceService } from 'src/app/demo/service/role-service.service';
+import { ScrollPanel } from 'primeng/scrollpanel';
+import { ProblemService } from 'src/app/demo/service/problem.service';
+import { EventIdRequest } from 'src/app/demo/models/event-id-request';
+
 
 @Component({
-    templateUrl: './chat.app.component.html'
+    templateUrl: './chat.app.component.html',
+    providers:[ConfirmationService,
+		MessageService,
+	]
 })
 export class ChatAppComponent implements AfterViewChecked,OnInit
 // implements OnDestroy 
@@ -28,6 +37,9 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
     //     this.subscription.unsubscribe();
     // }
 
+    connectionError: string = ''; 
+    isLoading: boolean = false;
+
     activeIndex: number = 0; 
    
     token : any = localStorage.getItem('token');
@@ -36,19 +48,17 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
     username : any = this.decodedToken.sub;
 
     contenue : string = "";
-    messages: { content: string, user: string, session: string }[] = [];
+    messages: { content: string, user: string, session: string, timestamp: Date }[] = [];
     messagesBot : { content: string, user: string }[] = [];
     messsages : Messsage[] = [];
     messsage : any  = {
         "content" : ""
     };
-    messsageCreated : any = {
-        "content" : "Hello"
-    };
+
     messsageBot : Messsage = {
         "id" : 0,
         "content" : "",
-        "timestamp" : "",
+        "timestamp" : new Date(),
         "conversation":{
             "id":0,
             "usernameId":"",
@@ -108,7 +118,7 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
         }]
     };
 
-    selectedSessionId : string = "";
+    selectedSessionId : string = "session1";
 
     defaultUserId: number = 123;
 
@@ -143,9 +153,13 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
     scrollToBottom: boolean = true; 
 
     constructor(
+
+        private problemService: ProblemService,
+
         private chatService: ChatService,
         private conversationService: ConversationService,
-        private messageService : MessageService
+        private messageService : MesssageService,
+        private messsageService : MessageService
     ) { }
 
     // setMessage() {
@@ -156,9 +170,12 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
     // }
 
     ngOnInit(): void {
+        this.scrollToBottom = true;
         this.getConversationByUser();
         this.getMessagesByConversation();
         this.generateBackgroundColor();
+
+        // this.getProblem();
     }
     
     ngAfterViewChecked(): void {
@@ -172,6 +189,19 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
         }
       }
 
+      public formatDate(dateArray: any) {
+        // Crée un nouvel objet Date avec les valeurs extraites
+        const date = new Date();
+        date.setFullYear(dateArray[0]);  // Année
+        date.setMonth(dateArray[1] - 1); // Mois (notez la conversion -1)
+        date.setDate(dateArray[2]);      // Jour
+
+        date.setHours(dateArray[3] || 0);    // Heure (par défaut 0 si non fourni)
+        date.setMinutes(dateArray[4] || 0); // Minute (par défaut 0 si non fourni)
+        date.setSeconds(dateArray[5] || 0); // Seconde (par défaut 0 si non fourni)
+    
+        return date;
+    }
         
     generateBackgroundColor(): void {
         this.initials = "B"+"O"+"T"
@@ -228,15 +258,17 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
     }
 
     getOrCreateConversation(){
+        this.isLoading = true;
         this.conversationService.getOrCreateConversation(this.messsage,this.username,this.selectedSessionId,this.usernameId).subscribe(
             response =>{
-                
+                this.isLoading = false;
                 this.messsageBot = response;
                 this.contenue = this.messsageBot.content;
                 this.messages.push({
                     content : this.contenue,
                     user : "Bot",
-                    session : this.selectedSessionId
+                    session : this.selectedSessionId,
+                    timestamp : new Date()
                     });
                 console.log("la reponse est : ", this.contenue);
                 // this.messsage.content = "";
@@ -254,22 +286,18 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
         this.sessionString = "session" + length;
         const usernameString = this.username + length;
 
-        // console.log(this.sessionString);
-        
-
-        this.conversationService.getOrCreateConversation(this.messsageCreated,this.username,this.sessionString,usernameString).subscribe(
+        this.conversationService.createConversation(this.username,this.sessionString,usernameString).subscribe(
             response =>{
-                
+                this.selectedSessionId = this.sessionString;
                 this.messsageBot = response;
                 this.contenue = this.messsageBot.content;
                 this.messages.push({
                     content : this.contenue,
                     user : "Bot",
-                    session : this.selectedSessionId
+                    session : this.selectedSessionId,
+                    timestamp : new Date()
                     });
                 console.log("la reponse est : ", this.contenue);
-                // this.messsage.content = "";
-                // console.log(this.messsage.content)
 
                 console.log("274.");
 
@@ -284,9 +312,6 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
                     console.log("274...");
                 });
 
-                // setTimeout(() => {
-                //     this.getMessagesByConversation();
-                // })
             },
             error =>{
                 console.log("l error est : ", error);
@@ -302,6 +327,12 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
         this.messageService.findByConversation(this.usernameId).subscribe(
         response => {
           this.messsages = response;
+          this.messsages.forEach(message => {
+            if (Array.isArray(message.timestamp)) {
+                message.timestamp = this.formatDate(message.timestamp);
+                console.log("TIME STAMP :", message.timestamp);
+            }
+          })
           console.log("la session depuis getMessagesByConversation est : ", this.selectedSessionId);
           console.log("La réponse de selected session est :", response);
         },
@@ -314,39 +345,44 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
       );
     }
 
+    show() {
+		this.messsageService.add({
+		  severity: 'error',  // Type de toast ('success', 'info', 'warn', 'error')
+		  summary: 'Connection Error',   // Titre du message
+		  detail: this.connectionError,  // Détail du message
+		  life: 3000            // Durée de vie du toast en millisecondes (3 secondes ici)
+		});
+	  }
 
     sendMesssage() {
         if (this.messsage.content.trim()) {
+          this.isLoading = true;
+          this.scrollToBottom = true;
+
           this.messages.push({
             content: this.messsage.content,
             user : this.username,
-            session : this.selectedSessionId
+            session : this.selectedSessionId,
+            timestamp : new Date()
           });
 
-            // this.messages.push({ 
-            //     content: "Bonsoir",
-            //     user : "Bot"
-            // });
-          
-
           console.log("les messages sont ", this.messages)
-    
-        //   this.getOrCreateConversation();
 
-        // setTimeout(() => {
-        //     this.getOrCreateConversation();
-        //     console.log("Étape 3 - Conversation récupérée ou créée");
-        //   }, 5000); 
+          console.log("359 selectedSessionId", this.selectedSessionId )
 
-        this.conversationService.getOrCreateConversation(this.messsage,this.username,this.selectedSessionId,this.usernameId).subscribe(
+          this.conversationService.getOrCreateConversation(this.messsage,this.username,this.selectedSessionId,this.usernameId).subscribe(
             response =>{
+                this.isLoading = false;
                 this.messsageBot = response;
                 this.contenue = this.messsageBot.content;
+                this.messsageBot.timestamp = this.formatDate(this.messsageBot.timestamp);
 
                 this.messages.push({
                     content : this.contenue,
                     user : "Bot",
-                    session : this.selectedSessionId
+                    session : this.selectedSessionId,
+                    timestamp : this.messsageBot.timestamp
+
                     });
                 console.log("la reponse est : ", this.contenue);
                 this.messsage.content = "";
@@ -355,11 +391,16 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
                 // console.log(this.messsage.content)
             },
             error =>{
-                console.log("l error est : ", error);
+                this.messages.pop();
+                if(error.message == "Erreur de connexion : Veuillez vérifier votre connexion Internet."){
+                    this.isLoading = false;
+                    this.connectionError = "Please check your Internet connection."
+                    this.show();
+                }
+                console.log("l error est : ", error.message);
             }
         )
             
-        //   this.messsage.content = '';
         }
       }
 
@@ -382,4 +423,42 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
         }
 
     }
+
+    parseMessage(content: string): string {
+        if (!content) return '';
+    
+        return content
+          .replace(/### (.*?)\n/g, '<h3>$1</h3>') // Titres en h3
+          .replace(/- (.*?)\n/g, '<li>$1</li>')   // Listes
+          .replace(/```bash([\s\S]*?)```/g, '<pre><code>$1</code></pre>') // Blocs de code
+          .replace(/\n/g, '<br>');               // Sauts de ligne
+    }
+
+// test 
+    eventId : string = "";
+    hostId : string = "";
+
+    getProblem(){
+        console.log(this.eventId);
+        this.problemService.getProblems(this.eventId).subscribe(
+            response => {
+                console.log("la reponse est : ", response);
+            },
+            error => {
+                console.log("l erreur est : ", error);
+            }
+        )
+    }
+
+    getProblemByHost(){
+        this.problemService.getProblemsByHost(this.hostId).subscribe(
+            response => {
+                console.log("la reponse est : ", response);
+            },
+            error => {
+                console.log("l erreur est : ", error);
+            }
+        )
+    }
+
 }

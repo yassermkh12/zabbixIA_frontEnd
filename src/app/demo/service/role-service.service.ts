@@ -17,7 +17,7 @@ export class RoleServiceService {
   }
 
   save(role: Role): Observable<Role> {
-    return this.http.post<Role>(this.API + 'save-role/', role);
+    return this.http.post<Role>(this.API + 'save-role', role);
   }
 
   findById(id: number): Observable<Role> {

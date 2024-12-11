@@ -12,6 +12,10 @@ import { ChatBoxComponent } from './chat-box/chat-box.component';
 import { ChatService } from './service/chat.service';
 import { RippleModule } from 'primeng/ripple';
 import { TabViewModule } from 'primeng/tabview';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { Toolbar, ToolbarModule } from 'primeng/toolbar';
+import { ScrollPanel, ScrollPanelModule } from 'primeng/scrollpanel';
 
 @NgModule({
     imports: [
@@ -24,7 +28,11 @@ import { TabViewModule } from 'primeng/tabview';
         BadgeModule,
         OverlayPanelModule,
         RippleModule,
-        TabViewModule
+        TabViewModule,
+        ConfirmDialogModule,
+        ToastModule,
+        ToolbarModule,
+        ScrollPanelModule
     ],
     declarations: [
         ChatAppComponent,

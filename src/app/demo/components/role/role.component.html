@@ -1,0 +1,142 @@
+<p-toolbar styleClass="mb-4">
+    <ng-template pTemplate="left">
+        <div class="flex flex-wrap gap-2">
+            <button pButton pRipple label="{{ 'New' }}" icon="pi pi-plus" class="p-button-success mr-2"
+            (click)="visibleRole()"></button>
+            <button pButton pRipple label="{{ 'Delete' }}" icon="pi pi-trash" class="p-button-danger mr-2"></button>
+        </div>
+    </ng-template>
+    </p-toolbar>
+    <p-toast></p-toast>
+
+<div class="col-12">
+    <div class="card">
+        <h5>Roles</h5>
+        <p-table #dt1 [value]="roles" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['name']" responsiveLayout="scroll">
+            <ng-template pTemplate="caption">
+                <div class="flex justify-content-between flex-column sm:flex-row">
+                    <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+                    <span class="p-input-icon-left mb-2">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Search Keyword" class="w-full"/>
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Name
+                            <p-columnFilter type="text" field="name" display="menu" placeholder="Search by name"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Action
+                        </div>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-role >
+                <tr >
+                    <td>
+                        {{role.name}}
+                    </td>
+                     <td>
+                                <button pButton pRipple icon="pi pi-pencil"
+                                        class="p-button-rounded p-button-success mr-2"
+                                        (click)="preUpdateRole(role.id)"></button>
+                                <button pButton pRipple icon="pi pi-trash"
+                                        class="p-button-rounded p-button-danger mr-2"
+                                        (click)="confirmDeleteRole(role.id)"></button>
+                                <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-warning mr-2"
+                                        (click)="viewRole(role.id)"></button>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="8">No customers found.</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="loadingbody">
+                <tr>
+                    <td colspan="8">Loading customers data. Please wait.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+</div>
+<p-confirmDialog></p-confirmDialog>
+
+
+<p-dialog [(visible)]="newRole" [style]="{width: '50vw'}" header="{{''}}"
+          [modal]="true" [maximizable]="true" [draggable]="false"
+          class="p-fluid">
+    <ng-template pTemplate="content">
+
+        <div class="field">
+            <label for="Nom">{{ 'Name'  }}</label>
+            <input type="text" pInputText id="Nom" [(ngModel)]="role.name" required autofocus
+                   />
+  
+        </div>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="{{'cancel'}}" icon="pi pi-times" class="p-button-text"
+                (click)="cancelRole()"></button>
+        <button pButton pRipple label="{{'save'}}" icon="pi pi-check" class="p-button-text"
+                (click)="createRole()"></button>
+    </ng-template>
+
+
+
+
+</p-dialog>
+
+
+<p-dialog [(visible)]="roleV" [style]="{width: '50vw'}" header="{{''}}"
+          [modal]="true" [maximizable]="true" [draggable]="false"
+          class="p-fluid">
+    <ng-template pTemplate="content">
+
+        <div class="field">
+            <label for="Nom">{{ 'Name'  }}</label>
+            <input type="text" pInputText id="Nom" [(ngModel)]="roleView.name" required autofocus
+            readonly>
+  
+        </div>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="{{'cancel'}}" icon="pi pi-times" class="p-button-text"
+                (click)="cancelViewRole()"></button>
+    </ng-template>
+
+</p-dialog>
+
+<p-dialog [(visible)]="roleU" [style]="{width: '50vw'}" header="{{''}}"
+          [modal]="true" [maximizable]="true" [draggable]="false"
+          class="p-fluid">
+    <ng-template pTemplate="content">
+
+        <div class="field">
+            <label for="Nom">{{ 'Name'  }}</label>
+            <input type="text" pInputText id="Nom" [(ngModel)]="roleUpdate.name" required autofocus
+            >
+  
+        </div>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="{{'cancel'}}" icon="pi pi-times" class="p-button-text"
+                (click)="cancelUpdateRole()"></button>
+        <button pButton pRipple label="{{'save'}}" icon="pi pi-check" class="p-button-text"
+                (click)="updateRole(roleUpdate.id)"></button>
+    </ng-template>
+
+</p-dialog>

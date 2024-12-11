@@ -7,7 +7,7 @@ import { er, P } from '@fullcalendar/core/internal-common';
 import { Conversation } from 'src/app/demo/models/conversation';
 import { jwtDecode } from 'jwt-decode';
 import { Messsage } from 'src/app/demo/models/messsage';
-import { MessageService } from 'src/app/demo/service/message.service';
+import { MesssageService } from 'src/app/demo/service/messsage.service';
 import { switchMap, timer } from 'rxjs';
 
 @Component({
@@ -34,7 +34,7 @@ export class ChatBoxComponent implements OnInit {
     messsageBot : Messsage = {
         "id" : 0,
         "content" : "",
-        "timestamp" : "",
+        "timestamp" :new Date(),
         "conversation":{
             "id":0,
             "usernameId":"",
@@ -119,7 +119,7 @@ export class ChatBoxComponent implements OnInit {
     constructor(
         private chatService: ChatService,
         private conversationService: ConversationService,
-        private messageService : MessageService
+        private messageService : MesssageService
     ) { }
 
     // setMessage() {

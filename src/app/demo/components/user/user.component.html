@@ -1,0 +1,114 @@
+
+<p-toolbar styleClass="mb-4">
+    <ng-template pTemplate="left">
+        <div class="flex flex-wrap gap-2">
+            <button pButton pRipple label="{{ 'New' }}" icon="pi pi-plus" class="p-button-success mr-2"
+            ></button>
+            <button pButton pRipple label="{{ 'Delete' }}" icon="pi pi-trash" class="p-button-danger mr-2"></button>
+            <!-- <button pButton pRipple label="{{ 'search'  }}"
+                    icon="pi pi-check"
+                    class="p-button-info"
+                    ></button> -->
+        </div>
+    </ng-template>
+    </p-toolbar>
+
+<div class="col-12">
+    <div class="card">
+        <h5>Users</h5>
+        <p-table #dt1 [value]="users" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['firstName','lastName','username','email']" responsiveLayout="scroll">
+            <ng-template pTemplate="caption">
+                <div class="flex justify-content-between flex-column sm:flex-row">
+                    <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+                    <span class="p-input-icon-left mb-2">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Search Keyword" class="w-full"/>
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Firstname
+                            <p-columnFilter type="text" field="firstName" display="menu" placeholder="Search by firstName"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Lastname
+                            <p-columnFilter type="text" field="lastname" display="menu" placeholder="Search by lastname"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Username
+                            <p-columnFilter type="text" field="username" display="menu" placeholder="Search by username"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Email
+                            <p-columnFilter type="text" field="email" display="menu" placeholder="Search by email"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Role
+                            <p-columnFilter type="text" field="role.name" display="menu" placeholder="Search by role name"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Action
+                        </div>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user >
+                <tr >
+                    <td>
+                        {{user.firstName}}
+                    </td>
+                    <td>
+                        {{user.lastName}}
+                    </td>
+                    <td>
+                        {{user.username}}
+                    </td>
+                    <td>
+                        {{user.email}}
+                    </td>
+                    <td>
+                        <div *ngFor="let role of user.roles">{{role.name}}</div>
+                    </td>
+                     <td>
+                                <button pButton pRipple icon="pi pi-pencil"
+                                        class="p-button-rounded p-button-success mr-2"
+                                        ></button>
+                                <button pButton pRipple icon="pi pi-trash"
+                                        class="p-button-rounded p-button-danger mr-2"
+                                        ></button>
+                                <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-warning mr-2"
+                                        ></button>
+                                <button pButton pRipple icon="pi pi-sort-alt" class="p-button-rounded p-button-info mr-2"
+                                        ></button> 
+                                <button pButton pRipple icon="pi pi-sort-alt-slash" class="p-button-rounded p-button-primary mr-2"
+                                        ></button>                    
+                   </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="8">No customers found.</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="loadingbody">
+                <tr>
+                    <td colspan="8">Loading customers data. Please wait.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+</div>
