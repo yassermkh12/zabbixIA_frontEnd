@@ -62,10 +62,69 @@
                       </div>
                                 </div>
                                 <div class="col mt-3">
-                                    <p class="text-900 font-semibold mb-3">{{ messsage.users[0]?.username || 'Utilisateur inconnu' }}</p>
+                                    <p class="text-900 font-semibold mb-3">{{ messsage.users[0].username || 'Utilisateur inconnu' }}</p>
                                     <span class="text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round" style="word-break: break-word; max-width:80%;">
                                         <p-scrollPanel  styleClass="custombar2" >
-                                        <div [innerHTML]="parseMessage(messsage.content)"></div>
+                                        <div *ngIf = "messsage.contenuAffichage">
+                                            <div [innerHTML]="parseMessage(messsage.content)"></div>
+                                        </div>
+                                            <div [innerHTML]="messsage.contenuMessageTest"></div>
+                                            <div *ngIf="messsage.severityCounts" >
+                                            <div class="col-8">
+                                                <div class="card">
+                                                    <table *ngIf="messsage.severityCounts">
+                                                        <thead>
+                                                          <tr>
+                                                            <th>
+                                                                Severity
+                                                            </th>
+                                                            <th>Count</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          <tr>
+                                                            <td>
+                                                                <span [class]="'customer-badge status-proposal'">Not Classified</span>
+                                                            </td>
+                                                            <td>{{ messsage.severityCounts.notClassified }}</td>
+                                                          </tr>
+                                                          <tr>
+                                                            <td>
+                                                                <span [class]="'customer-badge status-renewal'">Information</span>
+                                                            </td>
+                                                            <td>{{ messsage.severityCounts.information }}</td>
+                                                          </tr>
+                                                          <tr>
+                                                            <td>
+                                                                <span [class]="'customer-badge status-negotiation'">Warning</span>
+                                                            </td>
+                                                            <td>{{ messsage.severityCounts.warning }}</td>
+                                                          </tr>
+                                                          <tr>
+                                                            <td>
+                                                                <span [class]="'customer-badge status-new'">Average</span>
+                                                            </td>
+                                                            <td>{{ messsage.severityCounts.average }}</td>
+                                                          </tr>
+                                                          <tr>
+                                                            <td>
+                                                                <span [class]="'customer-badge status-qualified'">High</span>
+                                                            </td>
+                                                            <td>{{ messsage.severityCounts.high }}</td>
+                                                          </tr>
+                                                          <tr>
+                                                            <td>
+                                                                <span [class]="'customer-badge status-unqualified'">Disaster</span>
+                                                            </td>
+                                                            <td>{{ messsage.severityCounts.disaster }}</td>
+                                                          </tr>
+                                                        </tbody>
+                                                      </table>
+                                                </div>
+                                            
+                                            </div>
+                                        </div>
+
                                         </p-scrollPanel>
                                     </span>
                                     <p class="text-700 mt-3">{{messsage.timestamp | date:'yyyy-MM-dd hh:mm:ss'}}<i class="pi pi-check ml-2 text-green-400"></i></p>
@@ -101,10 +160,11 @@
                                 </div>
                                 <div class="col mt-3">
                                     <p   class="text-900 font-semibold mb-3">{{ msg.user || 'Utilisateur inconnu' }}</p>
-                                    <span class="text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round" style="word-break: break-word; max-width:60%;">
+                                    <span class="text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round" style="word-break: break-word; max-width:80%;">
                                         <!-- {{msg.content}} -->
                                         <p-scrollPanel  styleClass="custombar2" >
                                             <div [innerHTML]="parseMessage(msg.content)"></div>
+                                            <!-- <div [innerHTML]="msg.content"></div> -->
                                         </p-scrollPanel>
                                     </span>
                                     <p class="text-700 mt-3">{{msg.timestamp | date:'yyyy-MM-dd HH:mm:ss'}}
@@ -150,6 +210,15 @@
 
 
                     <div class="p-3 md:p-4 lg:p-6 flex flex-column sm:flex-row align-items-center mt-auto border-top-1 surface-border gap-3">
+                        <p-dropdown 
+                            [options]="options" 
+                            [(ngModel)]="selectedValue" 
+                            optionLabel="label" 
+                            placeholder="Select a type of message" 
+                            [showClear]="true" 
+                            [filter]="true" 
+                            appendTo="body">
+                        </p-dropdown>
                         <input id="message" type="text" [(ngModel)]="messsage.content" pInputText placeholder="Type a message" class="flex-1 w-full sm:w-auto border-round" (keydown.enter)="sendMesssage()"/>
                         <div class="flex w-full sm:w-auto gap-3">
                             <button pRipple class="p-button p-button-secondary w-full sm:w-auto justify-content-center text-xl" (click)="op.toggle($event)">😀</button>
@@ -164,15 +233,9 @@
             </ng-template>
         </p-overlayPanel>
         
-        <!-- <app-chat-box [user]="activeUser"></app-chat-box> -->
     </div>
 </div>
 </p-tabView>
 <p-toast [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }" />
 
-
-
-<!-- test -->
-
-<input id="message" type="text" [(ngModel)]="eventId" pInputText placeholder="Type a message eventId" class="flex-1 w-full sm:w-auto border-round" (keydown.enter)="getProblem()"/>
-<input id="message" type="text" [(ngModel)]="hostId" pInputText placeholder="Type a message hostId" class="flex-1 w-full sm:w-auto border-round" (keydown.enter)="getProblemByHost()"/>
+<p-scrollTop target="window" [threshold]="0" icon="pi pi-arrow-up"   />

@@ -13,6 +13,7 @@ import { RoleServiceService } from 'src/app/demo/service/role-service.service';
 import { ScrollPanel } from 'primeng/scrollpanel';
 import { ProblemService } from 'src/app/demo/service/problem.service';
 import { EventIdRequest } from 'src/app/demo/models/event-id-request';
+import { ScrollTop } from 'primeng/scrolltop';
 
 
 @Component({
@@ -55,10 +56,24 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
         "content" : ""
     };
 
+    messsageSeverity : any []=[
+        {"test" : ""}
+    ] 
+
     messsageBot : Messsage = {
         "id" : 0,
         "content" : "",
         "timestamp" : new Date(),
+        "contenuMessageTest": "",
+        "contenuAffichage": true,
+        "severityCounts":{
+            "notClassified": 0,
+            "information": 0,
+            "warning": 0,
+            "average": 0,
+            "high": 0,
+            "disaster": 0
+        },
         "conversation":{
             "id":0,
             "usernameId":"",
@@ -152,6 +167,28 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
 
     scrollToBottom: boolean = true; 
 
+    messageType: string = "event" ;
+    contenuTest : string = "";
+
+    selectedValue :  { label: string; value: string }  = {
+        label : "",
+        value : ""
+    };
+    options = [
+        { label: 'Get problem by event id', value: "event" },
+        { label: 'Get problem by host id', value: "host" },
+        { label: 'Get problem by host name', value: "host-name"},
+        { label: 'Get porblem by group id name', value: "group-name"},
+        { label: 'Find a solution to the problem', value: "GPT"},
+        { label: 'Get the number of monitored machines', value: "number-host"}
+    ];
+
+    contenuMessageTest : string = "";
+    contenuAffichage : boolean = true;
+
+    statuses: any[] = [];
+
+
     constructor(
 
         private problemService: ProblemService,
@@ -174,7 +211,14 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
         this.getConversationByUser();
         this.getMessagesByConversation();
         this.generateBackgroundColor();
-
+        this.statuses = [
+            { label: 'unqualified', value: '5'},
+            { label: 'qualified', value: '4' },
+            { label: 'new', value: '3'},
+            { label: 'negotiation', value: '2'},
+            { label: 'renewal', value: '1' },
+            { label: 'proposal', value: '0' }
+        ];
         // this.getProblem();
     }
     
@@ -259,7 +303,7 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
 
     getOrCreateConversation(){
         this.isLoading = true;
-        this.conversationService.getOrCreateConversation(this.messsage,this.username,this.selectedSessionId,this.usernameId).subscribe(
+        this.conversationService.getOrCreateConversation(this.messsage,this.username,this.selectedSessionId,this.usernameId,this.messageType).subscribe(
             response =>{
                 this.isLoading = false;
                 this.messsageBot = response;
@@ -319,6 +363,21 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
         )
     }
 
+    parseMessageProblem(content: string): { transformedContent: string; severityCounts: any} {
+        const {problems, severityCounts } = this.parseProblem(content);
+        if (content.startsWith('[')) {
+          const {problems, severityCounts } = this.parseProblem(content);
+          return {transformedContent: problems
+            .map(
+              (problem) =>
+                `<p><strong>Severity:</strong> ${problem.severity} <br><strong>Name:</strong> ${problem.name}</p>`
+            )
+            .join(''), severityCounts: severityCounts}
+        }
+        return {transformedContent: content, severityCounts: severityCounts};
+      }
+      
+
     getMessagesByConversation(){
         const length = this.conversation.length + 1;
         console.log(length);
@@ -326,11 +385,44 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
 
         this.messageService.findByConversation(this.usernameId).subscribe(
         response => {
-          this.messsages = response;
-          this.messsages.forEach(message => {
+
+            this.messsages = response;
+            this.messsages.forEach(message => {
+
+            message.users.forEach(
+                user => {
+                    if(user.username == "Bot"){
+                        if(message.content.startsWith("[")){
+                                this.contenuAffichage = false;
+                                const parsedMessage = this.parseMessageProblem(message.content);
+                                // const problems = JSON.parse(parsedMessage);
+
+                                console.log("les message qui debute par un [", message.content);
+                                message.contenuMessageTest = parsedMessage.transformedContent;
+                                message.severityCounts = parsedMessage.severityCounts;
+                                console.log(parsedMessage.severityCounts);
+                                message.contenuAffichage = false;
+                                console.log("les message qui debute par un [ sont parser", message.contenuMessageTest);
+
+                                 // Compter les problèmes par sévérité
+
+                                // console.log("average", this.average);
+                                // problems.forEach((element:any) => {
+                                //     console.log (element.severity) 
+                                // });
+
+                                
+                                
+                            }else{
+                                message.contenuAffichage = true;
+                            }                     
+                            console.log("contenuAffichage : ", this.contenuAffichage)
+                        }
+                }
+            )
+
             if (Array.isArray(message.timestamp)) {
                 message.timestamp = this.formatDate(message.timestamp);
-                console.log("TIME STAMP :", message.timestamp);
             }
           })
           console.log("la session depuis getMessagesByConversation est : ", this.selectedSessionId);
@@ -354,7 +446,13 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
 		});
 	  }
 
+
     sendMesssage() {
+
+        if(this.selectedValue.value == "number-host"){
+            this.messsage.content = "give me the number of monitored machines";
+        }
+
         if (this.messsage.content.trim()) {
           this.isLoading = true;
           this.scrollToBottom = true;
@@ -369,16 +467,50 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
           console.log("les messages sont ", this.messages)
 
           console.log("359 selectedSessionId", this.selectedSessionId )
+          console.log("value : ", this.selectedValue?.value);
 
-          this.conversationService.getOrCreateConversation(this.messsage,this.username,this.selectedSessionId,this.usernameId).subscribe(
+
+          this.conversationService.getOrCreateConversation(this.messsage,this.username,this.selectedSessionId,this.usernameId,this.selectedValue.value).subscribe(
             response =>{
                 this.isLoading = false;
                 this.messsageBot = response;
                 this.contenue = this.messsageBot.content;
                 this.messsageBot.timestamp = this.formatDate(this.messsageBot.timestamp);
 
+                if(this.contenue == "[]"){
+                    if(this.selectedValue.value == "event"){
+                        this.messages.pop();
+                        this.messsageService.add({
+                            severity: 'info',
+                            summary: 'Information',
+                            detail: 'il n y a pas de problem avec cet event id', 
+                            life: 3000
+                        })
+                    }else if(this.selectedValue.value == "group-name"){
+                        this.messages.pop();
+                        this.messsageService.add({
+                            severity: 'info',
+                            summary: 'Information',
+                            detail: 'il n y a pas de problem avec ce group id', 
+                            life: 3000
+                        })
+                    }else if(this.selectedValue.value == "host-name"){
+                        this.messages.pop();
+                        this.messsageService.add({
+                            severity: 'info',
+                            summary: 'Information',
+                            detail: 'il n y a pas de problem avec ce host name', 
+                            life: 3000
+                        })
+                    }
+                }else{
+                const parsedMessage = this.parseMessageProblem(this.contenue);
+                this.contenuTest = parsedMessage.transformedContent;
+
+                console.log("contenuTest : ", this.contenuTest);
+
                 this.messages.push({
-                    content : this.contenue,
+                    content : this.contenuTest,
                     user : "Bot",
                     session : this.selectedSessionId,
                     timestamp : this.messsageBot.timestamp
@@ -387,6 +519,7 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
                 console.log("la reponse est : ", this.contenue);
                 this.messsage.content = "";
                 this.scrollToBottom = true; // Activation du défilement
+                }
 
                 // console.log(this.messsage.content)
             },
@@ -397,12 +530,93 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
                     this.connectionError = "Please check your Internet connection."
                     this.show();
                 }
+                if(error.message == "Erreur lors de l'envoi de la requête"){
+                    this.isLoading = false;
+                    this.connectionError = "Zabbix is down."
+                    this.show();
+                }
                 console.log("l error est : ", error.message);
             }
         )
             
         }
       }
+
+      notClassified: number = 0;
+      information: number = 0;
+      warning: number = 0;
+      average: number = 0;
+      high: number = 0;
+      disaster: number = 0;
+
+      parseProblem(problemString: string): {
+        problems: { severity: string; name: string }[];
+        severityCounts: {
+          notClassified: number;
+          information: number;
+          warning: number;
+          average: number;
+          high: number;
+          disaster: number;
+        };
+      } {
+       // Définir une expression régulière pour extraire severity et name
+        const regex = /severity=(\d+),\s*name=([^,]+)/g;
+        const matches = [];
+        let match;
+
+        const severityCounts = {
+            notClassified: 0,
+            information: 0,
+            warning: 0,
+            average: 0,
+            high: 0,
+            disaster: 0,
+          };
+
+        // Itérer sur toutes les correspondances
+        while ((match = regex.exec(problemString)) !== null) {
+
+            if(match[1] == "0"){
+                match[1] = "not classified";
+                severityCounts.notClassified++;
+
+            }else if(match[1] == "1"){
+                match[1] = "information";
+                severityCounts.information++;
+
+            }else if(match[1] == "2"){
+                match[1] = "warning";
+                severityCounts.warning++;
+
+            }else if(match[1] == "3"){
+                match[1] = "average";
+                severityCounts.average++;
+
+
+            }else if(match[1] == "4"){
+                match[1] = "high";
+                severityCounts.high++;
+
+
+            }else if(match[1] == "5"){
+                match[1] = "disaster";
+                this.disaster++;
+                severityCounts.disaster++;
+            }
+
+             matches.push({
+            severity: match[1],
+            name: match[2],
+            });
+        }
+
+        return {
+            problems: matches,
+            severityCounts: severityCounts,
+          };
+    }
+      
 
     onTabChange(index: number) {
         if(this.conversation[index]?.sessionId == undefined){
@@ -433,32 +647,4 @@ export class ChatAppComponent implements AfterViewChecked,OnInit
           .replace(/```bash([\s\S]*?)```/g, '<pre><code>$1</code></pre>') // Blocs de code
           .replace(/\n/g, '<br>');               // Sauts de ligne
     }
-
-// test 
-    eventId : string = "";
-    hostId : string = "";
-
-    getProblem(){
-        console.log(this.eventId);
-        this.problemService.getProblems(this.eventId).subscribe(
-            response => {
-                console.log("la reponse est : ", response);
-            },
-            error => {
-                console.log("l erreur est : ", error);
-            }
-        )
-    }
-
-    getProblemByHost(){
-        this.problemService.getProblemsByHost(this.hostId).subscribe(
-            response => {
-                console.log("la reponse est : ", response);
-            },
-            error => {
-                console.log("l erreur est : ", error);
-            }
-        )
-    }
-
 }

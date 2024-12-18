@@ -36,8 +36,8 @@ export class ConversationService {
     )
   }
 
-  getOrCreateConversation(message: Messsage, username: string, session: string, usernameId: string): Observable<Messsage> {
-    return this.http.post<Messsage>(this.API + username +'/'+ session +'/'+ usernameId, message)
+  getOrCreateConversation(message: Messsage, username: string, session: string, usernameId: string, messageType: string ): Observable<Messsage> {
+    return this.http.post<Messsage>(this.API + username +'/'+ session +'/'+ usernameId + '/' + messageType, message)
     .pipe(
       catchError(
         (error:HttpErrorResponse) =>{

@@ -16,6 +16,27 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Toolbar, ToolbarModule } from 'primeng/toolbar';
 import { ScrollPanel, ScrollPanelModule } from 'primeng/scrollpanel';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { MultiSelect, MultiSelectModule } from 'primeng/multiselect';
+import { CascadeSelectModule } from 'primeng/cascadeselect';
+import { DropdownModule } from 'primeng/dropdown';
+import { ScrollTop, ScrollTopModule } from 'primeng/scrolltop';
+import { Table, TableModule } from 'primeng/table';
+import { TableDemoRoutingModule } from '../../uikit/table/tabledemo-routing.module';
+import { RatingModule } from 'primeng/rating';
+import { SliderModule } from 'primeng/slider';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { FileUploadModule } from 'primeng/fileupload';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { ChipsModule } from 'primeng/chips';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { DialogModule } from 'primeng/dialog';
+import { CalendarModule } from 'primeng/calendar';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { TagModule } from 'primeng/tag';
+import { PasswordModule } from 'primeng/password';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @NgModule({
     imports: [
@@ -32,7 +53,45 @@ import { ScrollPanel, ScrollPanelModule } from 'primeng/scrollpanel';
         ConfirmDialogModule,
         ToastModule,
         ToolbarModule,
-        ScrollPanelModule
+        ScrollPanelModule,
+        SelectButtonModule,
+        DropdownModule,
+        MultiSelectModule,
+         CommonModule,
+                TableDemoRoutingModule,
+                FormsModule,
+                TableModule,
+                RatingModule,
+                ButtonModule,
+                SliderModule,
+                InputTextModule,
+                ToggleButtonModule,
+                RippleModule,
+                MultiSelectModule,
+                DropdownModule,
+                ProgressBarModule,
+                ToastModule,
+            ToolbarModule,
+            CommonModule,
+                ConfirmDialogModule,
+                FileUploadModule,
+                SplitButtonModule,
+                ChipsModule,
+                InputNumberModule,
+                DialogModule,
+                SplitButtonModule,
+                FileUploadModule,
+                ConfirmDialogModule,
+                CalendarModule,
+                TabViewModule,
+                InputSwitchModule,
+                TagModule,
+                PasswordModule,
+                // SpinnerModule,
+                InputTextareaModule,
+                SelectButtonModule,
+                ScrollTopModule,
+                
     ],
     declarations: [
         ChatAppComponent,

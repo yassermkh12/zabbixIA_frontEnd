@@ -6,5 +6,15 @@ export interface Messsage {
     users: Array<User>; 
     content: string;
     timestamp: Date;
-    conversation: Conversation; 
+    conversation: Conversation;
+    contenuMessageTest : string;
+    contenuAffichage: boolean;
+    severityCounts: {
+        notClassified: number;
+        information: number;
+        warning: number;
+        average: number;
+        high: number;
+        disaster: number;
+    };
 }

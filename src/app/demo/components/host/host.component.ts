@@ -15,6 +15,7 @@ import { RatingModule } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
 import { TableDemoRoutingModule } from '../uikit/table/tabledemo-routing.module';
 import { CommonModule } from '@angular/common';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-host',
@@ -36,6 +37,9 @@ import { CommonModule } from '@angular/common';
 		ToastModule,
     ToolbarModule
   ],
+  providers:[
+    MessageService
+  ],
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'
 })
@@ -47,10 +51,13 @@ export class HostComponent implements OnInit {
   statuses: any[] = [];
   loading: boolean = true;
 
+  errorZabbixHost: string = "";
+
   @ViewChild('filter') filter!: ElementRef;
 
   constructor(
     private problemService: ProblemService,
+    private messageService: MessageService,
   ){}
 
   ngOnInit(): void {
@@ -66,8 +73,18 @@ export class HostComponent implements OnInit {
       },
       error => {
         this.loading = true;
-        console.log("l erreur est : ", error);
-      }
+
+        if(error.message == "Erreur lors de l'envoi de la requête"){
+          this.errorZabbixHost = "Zabbix is down";
+        }
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: this.errorZabbixHost,
+          life: 3000
+         });
+        console.log("l erreur de getProblem est : ", error.message);
+     }
     )
   }
 

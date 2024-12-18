@@ -15,268 +15,270 @@ import { switchMap, timer } from 'rxjs';
     templateUrl: './chat-box.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ChatBoxComponent implements OnInit {
+export class ChatBoxComponent 
+// implements OnInit 
+{
 
-    activeIndex: number = 0; // Définit l'onglet actif par défaut
+    // activeIndex: number = 0; // Définit l'onglet actif par défaut
    
-    token : any = localStorage.getItem('token');
-    refrechToken  : any = localStorage.getItem('refrechToken');
-    decodedToken : any = jwtDecode(this.token);
-    username : any = this.decodedToken.sub;
+    // token : any = localStorage.getItem('token');
+    // refrechToken  : any = localStorage.getItem('refrechToken');
+    // decodedToken : any = jwtDecode(this.token);
+    // username : any = this.decodedToken.sub;
 
-    contenue : string = "";
-    messages: { content: string, user: string }[] = [];
-    messagesBot : { content: string, user: string }[] = [];
-    messsages : Messsage[] = [];
-    messsage : any  = {
-        "content" : ""
-    };
-    messsageBot : Messsage = {
-        "id" : 0,
-        "content" : "",
-        "timestamp" :new Date(),
-        "conversation":{
-            "id":0,
-            "usernameId":"",
-            "sessionId":"",
-            "users":[{
-                "id": 1,
-                "name": "",
-                "image": "",
-                "status": "",
-                "messages": [
-                    {
-                        "text": "",
-                        "ownerId": 1,
-                        "createdAt": 1652646338240
-                    }
-                ],
-                "lastSeen": "",
+    // contenue : string = "";
+    // messages: { content: string, user: string }[] = [];
+    // messagesBot : { content: string, user: string }[] = [];
+    // messsages : Messsage[] = [];
+    // messsage : any  = {
+    //     "content" : ""
+    // };
+    // messsageBot : Messsage = {
+    //     "id" : 0,
+    //     "content" : "",
+    //     "timestamp" :new Date(),
+    //     "conversation":{
+    //         "id":0,
+    //         "usernameId":"",
+    //         "sessionId":"",
+    //         "users":[{
+    //             "id": 1,
+    //             "name": "",
+    //             "image": "",
+    //             "status": "",
+    //             "messages": [
+    //                 {
+    //                     "text": "",
+    //                     "ownerId": 1,
+    //                     "createdAt": 1652646338240
+    //                 }
+    //             ],
+    //             "lastSeen": "",
                 
-                "verificationCode": 0,
-                "verificationCodeExpiration": "",
-                "email": "",
-                "username": "",
-                "password": "",
-                "roles": [{
-                    "id":1,
-                    "name":""
-                }],
-                "firstName": "",
-                "lastName": "",
-            }]
-        },
-        "users" : [{
-            "id": 1,
-                "name": "",
-                "image": "",
-                "status": "",
-                "messages": [
-                    {
-                        "text": "",
-                        "ownerId": 1,
-                        "createdAt": 1652646338240
-                    }
-                ],
-                "lastSeen": "",
+    //             "verificationCode": 0,
+    //             "verificationCodeExpiration": "",
+    //             "email": "",
+    //             "username": "",
+    //             "password": "",
+    //             "roles": [{
+    //                 "id":1,
+    //                 "name":""
+    //             }],
+    //             "firstName": "",
+    //             "lastName": "",
+    //         }]
+    //     },
+    //     "users" : [{
+    //         "id": 1,
+    //             "name": "",
+    //             "image": "",
+    //             "status": "",
+    //             "messages": [
+    //                 {
+    //                     "text": "",
+    //                     "ownerId": 1,
+    //                     "createdAt": 1652646338240
+    //                 }
+    //             ],
+    //             "lastSeen": "",
                 
-                "verificationCode": 0,
-                "verificationCodeExpiration": "",
-                "email": "",
-                "username": "",
-                "password": "",
-                "roles": [{
-                    "id":1,
-                    "name":""
-                }],
-                "firstName": "",
-                "lastName": "",
-        }]
-    };
+    //             "verificationCode": 0,
+    //             "verificationCodeExpiration": "",
+    //             "email": "",
+    //             "username": "",
+    //             "password": "",
+    //             "roles": [{
+    //                 "id":1,
+    //                 "name":""
+    //             }],
+    //             "firstName": "",
+    //             "lastName": "",
+    //     }]
+    // };
 
-    selectedSessionId : string = "";
+    // selectedSessionId : string = "";
 
-    defaultUserId: number = 123;
+    // defaultUserId: number = 123;
 
-    message!: Message;
+    // message!: Message;
 
-    textContent: string = '';
+    // textContent: string = '';
 
-    uploadedFiles: any[] = [];
+    // uploadedFiles: any[] = [];
 
-    emojis = [
-        '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😇', '😉', '😊', '🙂', '🙃', '😋', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '🤪', '😜', '😝', '😛',
-        '🤑', '😎', '🤓', '🧐', '🤠', '🥳', '🤗', '🤡', '😏', '😶', '😐', '😑', '😒', '🙄', '🤨', '🤔', '🤫', '🤭', '🤥', '😳', '😞', '😟', '😠', '😡', '🤬', '😔',
-        '😟', '😠', '😡', '🤬', '😔', '😕', '🙁', '😬', '🥺', '😣', '😖', '😫', '😩', '🥱', '😤', '😮', '😱', '😨', '😰', '😯', '😦', '😧', '😢', '😥', '😪', '🤤'
-    ];
+    // emojis = [
+    //     '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😇', '😉', '😊', '🙂', '🙃', '😋', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '🤪', '😜', '😝', '😛',
+    //     '🤑', '😎', '🤓', '🧐', '🤠', '🥳', '🤗', '🤡', '😏', '😶', '😐', '😑', '😒', '🙄', '🤨', '🤔', '🤫', '🤭', '🤥', '😳', '😞', '😟', '😠', '😡', '🤬', '😔',
+    //     '😟', '😠', '😡', '🤬', '😔', '😕', '🙁', '😬', '🥺', '😣', '😖', '😫', '😩', '🥱', '😤', '😮', '😱', '😨', '😰', '😯', '😦', '😧', '😢', '😥', '😪', '🤤'
+    // ];
 
-    @Input() user!: User;
+    // @Input() user!: User;
 
 
-    conversation : Conversation [] = [];
-    usernameId : string = ""; 
+    // conversation : Conversation [] = [];
+    // usernameId : string = ""; 
 
-    constructor(
-        private chatService: ChatService,
-        private conversationService: ConversationService,
-        private messageService : MesssageService
-    ) { }
+    // constructor(
+    //     private chatService: ChatService,
+    //     private conversationService: ConversationService,
+    //     private messageService : MesssageService
+    // ) { }
 
-    // setMessage() {
-    //     if (this.user) {
-    //         let filteredMessages = this.user.messages.filter(m => m.ownerId !== this.defaultUserId);
-    //         this.message = filteredMessages[filteredMessages.length - 1];
+    // // setMessage() {
+    // //     if (this.user) {
+    // //         let filteredMessages = this.user.messages.filter(m => m.ownerId !== this.defaultUserId);
+    // //         this.message = filteredMessages[filteredMessages.length - 1];
+    // //     }
+    // // }
+
+    // ngOnInit(): void {
+    //     this.getMessagesByConversation();
+    //     this.getConversationByUser();
+
+    //     this.conversationService.findByUsername("Admin").subscribe(
+    //         response =>{
+    //             this.conversation = response;
+    //             console.log("la reponse conversation est : ", this.conversation);
+    //         },
+    //         error => {
+    //             console.log("l erreur conversation est : ", error);
+    //         }
+    //     )
+    // }
+
+    // sendMessage() {
+    //     if (this.textContent == '' || this.textContent === ' ') {
+    //         return;
+    //     }
+    //     else {
+    //         let message = {
+    //             text: this.textContent,
+    //             ownerId: 123,
+    //             createdAt: new Date().getTime(),
+    //         }
+
+    //         this.chatService.sendMessage(message)
+    //         this.textContent = '';
     //     }
     // }
 
-    ngOnInit(): void {
-        this.getMessagesByConversation();
-        this.getConversationByUser();
+    // onEmojiSelect(emoji: string) {
+    //     this.textContent += emoji;
+    // }
 
-        this.conversationService.findByUsername("Admin").subscribe(
-            response =>{
-                this.conversation = response;
-                console.log("la reponse conversation est : ", this.conversation);
-            },
-            error => {
-                console.log("l erreur conversation est : ", error);
-            }
-        )
-    }
+    // parseDate(timestamp: number) {
+    //     return new Date(timestamp).toTimeString().split(':').slice(0, 2).join(':');
+    // }
 
-    sendMessage() {
-        if (this.textContent == '' || this.textContent === ' ') {
-            return;
-        }
-        else {
-            let message = {
-                text: this.textContent,
-                ownerId: 123,
-                createdAt: new Date().getTime(),
-            }
+    // getConversationByUser(){
+    //     this.conversationService.findByUsername(this.username).subscribe(
+    //         response =>{
+    //             this.conversation = response;
+    //             console.log("la reponse conversation est : ", this.conversation);
+    //         },
+    //         error => {
+    //             console.log("l erreur conversation est : ", error);
+    //         }
+    //     )
+    // }
 
-            this.chatService.sendMessage(message)
-            this.textContent = '';
-        }
-    }
+    // getConversationBySession(){
+    //     this.conversationService.findBySession("1").subscribe(
+    //         response =>{
+    //             console.log("la reponse est : ", response);
+    //         },
+    //         error => {
+    //             console.log("l erreur est : ", error);
+    //         }
+    //     )
+    // }
 
-    onEmojiSelect(emoji: string) {
-        this.textContent += emoji;
-    }
+    // getOrCreateConversation(){
+    //     this.conversationService.getOrCreateConversation(this.messsage,this.username,this.selectedSessionId,this.usernameId).subscribe(
+    //         response =>{
+    //             this.messsageBot = response;
+    //             this.contenue = this.messsageBot.content;
+    //             this.messages.push({
+    //                 content : this.contenue,
+    //                 user : "Bot"
+    //                 });
+    //             console.log("la reponse est : ", this.contenue);
+    //             // this.messsage.content = "";
+    //             // console.log(this.messsage.content)
+    //         },
+    //         error =>{
+    //             console.log("l error est : ", error);
+    //         }
+    //     )
+    // }
 
-    parseDate(timestamp: number) {
-        return new Date(timestamp).toTimeString().split(':').slice(0, 2).join(':');
-    }
-
-    getConversationByUser(){
-        this.conversationService.findByUsername(this.username).subscribe(
-            response =>{
-                this.conversation = response;
-                console.log("la reponse conversation est : ", this.conversation);
-            },
-            error => {
-                console.log("l erreur conversation est : ", error);
-            }
-        )
-    }
-
-    getConversationBySession(){
-        this.conversationService.findBySession("1").subscribe(
-            response =>{
-                console.log("la reponse est : ", response);
-            },
-            error => {
-                console.log("l erreur est : ", error);
-            }
-        )
-    }
-
-    getOrCreateConversation(){
-        this.conversationService.getOrCreateConversation(this.messsage,this.username,this.selectedSessionId,this.usernameId).subscribe(
-            response =>{
-                this.messsageBot = response;
-                this.contenue = this.messsageBot.content;
-                this.messages.push({
-                    content : this.contenue,
-                    user : "Bot"
-                    });
-                console.log("la reponse est : ", this.contenue);
-                // this.messsage.content = "";
-                // console.log(this.messsage.content)
-            },
-            error =>{
-                console.log("l error est : ", error);
-            }
-        )
-    }
-
-    getMessagesByConversation(){
-        timer(0, 1500000).pipe(
-        switchMap(() => this.messageService.findByConversation("sessionId")) // Appelle périodiquement la fonction
-      )
-      .subscribe(
-        response => {
-          this.messsages = response;
-          console.log("La réponse est :", response);
-        },
-        error => {
-          console.log("L'erreur est :", error);
-        }
-      );
-    }
+    // getMessagesByConversation(){
+    //     timer(0, 1500000).pipe(
+    //     switchMap(() => this.messageService.findByConversation("sessionId")) // Appelle périodiquement la fonction
+    //   )
+    //   .subscribe(
+    //     response => {
+    //       this.messsages = response;
+    //       console.log("La réponse est :", response);
+    //     },
+    //     error => {
+    //       console.log("L'erreur est :", error);
+    //     }
+    //   );
+    // }
 
 
-    sendMesssage() {
-        if (this.messsage.content.trim()) {
-          this.messages.push({
-            content: this.messsage.content,
-            user : this.username
-          });
+    // sendMesssage() {
+    //     if (this.messsage.content.trim()) {
+    //       this.messages.push({
+    //         content: this.messsage.content,
+    //         user : this.username
+    //       });
 
-            // this.messages.push({ 
-            //     content: "Bonsoir",
-            //     user : "Bot"
-            // });
+    //         // this.messages.push({ 
+    //         //     content: "Bonsoir",
+    //         //     user : "Bot"
+    //         // });
           
 
-          console.log("les messages sont ", this.messages)
+    //       console.log("les messages sont ", this.messages)
     
-        //   this.getOrCreateConversation();
+    //     //   this.getOrCreateConversation();
 
-        // setTimeout(() => {
-        //     this.getOrCreateConversation();
-        //     console.log("Étape 3 - Conversation récupérée ou créée");
-        //   }, 5000); 
+    //     // setTimeout(() => {
+    //     //     this.getOrCreateConversation();
+    //     //     console.log("Étape 3 - Conversation récupérée ou créée");
+    //     //   }, 5000); 
 
-        this.conversationService.getOrCreateConversation(this.messsage,this.username,this.selectedSessionId,this.usernameId).subscribe(
-            response =>{
-                this.messsageBot = response;
-                this.contenue = this.messsageBot.content;
-                this.messages.push({
-                    content : this.contenue,
-                    user : "Bot"
-                    });
-                console.log("la reponse est : ", this.contenue);
-                // this.messsage.content = "";
-                // console.log(this.messsage.content)
-            },
-            error =>{
-                console.log("l error est : ", error);
-            }
-        )
+    //     this.conversationService.getOrCreateConversation(this.messsage,this.username,this.selectedSessionId,this.usernameId).subscribe(
+    //         response =>{
+    //             this.messsageBot = response;
+    //             this.contenue = this.messsageBot.content;
+    //             this.messages.push({
+    //                 content : this.contenue,
+    //                 user : "Bot"
+    //                 });
+    //             console.log("la reponse est : ", this.contenue);
+    //             // this.messsage.content = "";
+    //             // console.log(this.messsage.content)
+    //         },
+    //         error =>{
+    //             console.log("l error est : ", error);
+    //         }
+    //     )
             
-        //   this.messsage.content = '';
-        }
-      }
+    //     //   this.messsage.content = '';
+    //     }
+    //   }
 
-    onTabChange(index: number) {
-        if(this.conversation[index]?.sessionId == undefined){
+    // onTabChange(index: number) {
+    //     if(this.conversation[index]?.sessionId == undefined){
 
-        }else{
-            this.selectedSessionId = this.conversation[index]?.sessionId;
-            console.log("Selected session ID:", this.selectedSessionId);
-            console.log("active indexe est ", this.activeIndex);
-        }
+    //     }else{
+    //         this.selectedSessionId = this.conversation[index]?.sessionId;
+    //         console.log("Selected session ID:", this.selectedSessionId);
+    //         console.log("active indexe est ", this.activeIndex);
+    //     }
 
-    }
+    // }
 }

@@ -3,7 +3,7 @@
     <ng-template pTemplate="left">
         <div class="flex flex-wrap gap-2">
             <button pButton pRipple label="{{ 'New' }}" icon="pi pi-plus" class="p-button-success mr-2"
-            ></button>
+            (click)="visibleUser()"></button>
             <button pButton pRipple label="{{ 'Delete' }}" icon="pi pi-trash" class="p-button-danger mr-2"></button>
             <!-- <button pButton pRipple label="{{ 'search'  }}"
                     icon="pi pi-check"
@@ -12,6 +12,8 @@
         </div>
     </ng-template>
     </p-toolbar>
+    <p-toast></p-toast>
+
 
 <div class="col-12">
     <div class="card">
@@ -88,13 +90,13 @@
                                         ></button>
                                 <button pButton pRipple icon="pi pi-trash"
                                         class="p-button-rounded p-button-danger mr-2"
-                                        ></button>
+                                        (click)="confirmDeleteUser(user.id)"></button>
                                 <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-warning mr-2"
-                                        ></button>
+                                        (click)="viewUser(user.id)"></button>
                                 <button pButton pRipple icon="pi pi-sort-alt" class="p-button-rounded p-button-info mr-2"
-                                        ></button> 
+                                        (click)="visibleAddRole(user.id)"></button> 
                                 <button pButton pRipple icon="pi pi-sort-alt-slash" class="p-button-rounded p-button-primary mr-2"
-                                        ></button>                    
+                                        (click)="visibleRemoveRole(user.id)"></button>                    
                    </td>
                 </tr>
             </ng-template>
@@ -112,3 +114,178 @@
     </div>
 
 </div>
+<p-confirmDialog></p-confirmDialog>
+
+
+<p-dialog [(visible)]="newUser" [style]="{width: '50vw'}" header="{{''}}"
+          [modal]="true" [maximizable]="true" [draggable]="false"
+          class="p-fluid">
+    <ng-template pTemplate="content">
+
+        <div class="field">
+            <label for="Firstname">{{ 'Firstname'  }}</label>
+            <input type="text" pInputText id="Firstname" [(ngModel)]="user.firstName" required autofocus 
+                />
+        </div>
+
+        <div class="field">
+            <label for="Lastname">{{ 'Lastname'  }}</label>
+            <input type="text" pInputText id="Lastname" [(ngModel)]="user.lastName" required autofocus 
+                />
+        </div>
+
+        <div class="field">
+            <label for="Username">{{ 'Username'  }}</label>
+            <input type="text" pInputText id="Username" [(ngModel)]="user.username" required autofocus 
+                />
+        </div>
+
+        <div class="field">
+            <label for="Email">{{ 'Email'  }}</label>
+            <input type="email" pInputText id="Email" [(ngModel)]="user.email" required autofocus 
+                />
+        </div>
+
+        <div class="field">
+            <label for="Password">{{ 'Password'  }}</label>
+            <input type="password" pInputText id="Password" [(ngModel)]="user.password" required autofocus
+                />
+        </div>
+
+        <div class="field">
+            <label for="Role">{{ 'Role'  }}</label>
+            <p-dropdown 
+                [options]="roles" 
+                [(ngModel)]="role" 
+                optionLabel="name" 
+                placeholder="Select role" 
+                [showClear]="true" 
+                [filter]="true" 
+                appendTo="body">
+            </p-dropdown>
+        </div>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="{{'cancel'}}" icon="pi pi-times" class="p-button-text"
+                (click)="cancelUser()"></button>
+        <button pButton pRipple label="{{'save'}}" icon="pi pi-check" class="p-button-text"
+                (click)="createUser()"></button>
+    </ng-template>
+
+</p-dialog>
+
+
+<p-dialog [(visible)]="userV" [style]="{width: '50vw'}" header="{{''}}"
+          [modal]="true" [maximizable]="true" [draggable]="false"
+          class="p-fluid">
+    <ng-template pTemplate="content">
+
+        <div class="field">
+            <label for="Firstname">{{ 'Firstname'  }}</label>
+            <input type="text" pInputText id="Firstname" [(ngModel)]="userView.firstName" required autofocus 
+            readonly>
+        </div>
+
+        <div class="field">
+            <label for="Lastname">{{ 'Lastname'  }}</label>
+            <input type="text" pInputText id="Lastname" [(ngModel)]="userView.lastName" required autofocus 
+            readonly>
+        </div>
+
+        <div class="field">
+            <label for="Username">{{ 'Username'  }}</label>
+            <input type="text" pInputText id="Username" [(ngModel)]="userView.username" required autofocus 
+            readonly>
+        </div>
+
+        <div class="field">
+            <label for="Email">{{ 'Email'  }}</label>
+            <input type="email" pInputText id="Email" [(ngModel)]="userView.email" required autofocus 
+            readonly>
+        </div>
+
+        <div class="field">
+            <label for="Role">{{ 'Role'  }}</label>
+            <div *ngFor="let role of userView.roles">
+                <div>
+                    <input type="text" pInputText id="Role" [(ngModel)]="role.name" required autofocus
+                    readonly>
+                </div>
+            </div>
+        </div>              
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="{{'cancel'}}" icon="pi pi-times" class="p-button-text"
+                (click)="cancelViewUser()"></button>
+    </ng-template>
+
+</p-dialog>
+
+
+<p-dialog [(visible)]="addRole" [style]="{width: '50vw'}" header="{{''}}"
+          [modal]="true" [maximizable]="true" [draggable]="false"
+          class="p-fluid">
+    <ng-template pTemplate="content">
+
+  
+            <div class="field">
+                <label for="Role">{{ 'Role'  }}</label>
+                <p-dropdown 
+                    [options]="roles" 
+                    [(ngModel)]="role" 
+                    optionLabel="name" 
+                    placeholder="Select role" 
+                    [showClear]="true" 
+                    [filter]="true" 
+                    appendTo="body">
+                </p-dropdown>
+            </div>
+    
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="{{'cancel'}}" icon="pi pi-times" class="p-button-text"
+                (click)="cancelAddRole()"></button>
+        <button pButton pRipple label="{{'save'}}" icon="pi pi-check" class="p-button-text"
+                (click)="addRoleToUser()"></button>
+    </ng-template>
+
+</p-dialog>
+
+
+
+<p-dialog [(visible)]="removeRole" [style]="{width: '50vw'}" header="{{''}}"
+          [modal]="true" [maximizable]="true" [draggable]="false"
+          class="p-fluid">
+    <ng-template pTemplate="content">
+
+  
+            <div class="field">
+                <label for="Role">{{ 'Role'  }}</label>
+                <p-dropdown 
+                    [options]="roles" 
+                    [(ngModel)]="role" 
+                    optionLabel="name" 
+                    placeholder="Select role" 
+                    [showClear]="true" 
+                    [filter]="true" 
+                    appendTo="body">
+                </p-dropdown>
+            </div>
+    
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="{{'cancel'}}" icon="pi pi-times" class="p-button-text"
+                (click)="cancelRemoveRole()"></button>
+        <button pButton pRipple label="{{'save'}}" icon="pi pi-check" class="p-button-text"
+                (click)="removeRoleToUser()"></button>
+    </ng-template>
+
+</p-dialog>

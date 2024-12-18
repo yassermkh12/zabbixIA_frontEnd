@@ -18,12 +18,21 @@ export class UserService {
   }
 
   save(user: User): Observable<User> {
-    return this.http.post<User>(this.API + 'save-user', user);
+    return this.http.post<User>(this.API + 'save-user', user)
+    .pipe(
+      catchError(
+        (error:HttpErrorResponse) =>{
+          console.log("error", error.error?.message);
+          return throwError(() => new Error(error.error.message || "Erreur inconnue")); // Retourne un message d'erreur        
+          }
+      )
+    );
   }
 
-  // // delete(user: User) {
-  // //   return  this.http.delete<number>(this.API + 'id/' + user.id);
-  // // }
+
+  delete(id: number) {
+    return  this.http.delete<number>(this.API + 'delete/' + id);
+  }
   //
   // // edit(user: User): Observable<User> {
   // //   return this.http.put<User>(this.API, user);
@@ -51,5 +60,30 @@ export class UserService {
           }
       )
     )
+  }
+  // Ajouter un rôle à un utilisateur
+  addRoleToUser(userId: number, roleId: number): Observable<void> {
+    return this.http.post<void>(`${this.API}add-role-to-user/${userId}/${roleId}`, null)
+    .pipe(
+      catchError(
+        (error:HttpErrorResponse) =>{
+          console.log("error", error.error?.message);
+          return throwError(() => new Error(error.error.message || "Erreur inconnue")); // Retourne un message d'erreur        
+          }
+      )
+    );
+  }
+
+  // Supprimer un rôle d'un utilisateur
+  removeRoleFromUser(userId: number, roleId: number): Observable<void> {
+    return this.http.post<void>(`${this.API}remove-role-to-user/${userId}/${roleId}`, null)
+    .pipe(
+      catchError(
+        (error:HttpErrorResponse) =>{
+          console.log("error", error.error?.message);
+          return throwError(() => new Error(error.error.message || "Erreur inconnue")); // Retourne un message d'erreur        
+          }
+      )
+    );
   }
 }
